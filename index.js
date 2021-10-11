@@ -30,6 +30,34 @@ console.log(check1 == check2) // => true, comparison by values, console.log(chec
 // SOLUTION is in deepStrictEqual.js file
 //
 
+// Polyfill to compare objects 
+function isEqual(object1, object2) {
+  const props1 = Object.getOwnPropertyNames(object1); // create array of keys of first object
+  const props2 = Object.getOwnPropertyNames(object2); // create array of keys of second object
+
+  if (props1.length !== props2.length) {
+    return false;
+  }
+
+  for (let i = 0; i < props1.length; i += 1) {
+    const prop = props1[i];
+    const bothAreObjects = typeof(object1[prop]) === 'object' && typeof(object2[prop]) === 'object';  // check if both properties of each object is objects
+
+    if ((!bothAreObjects && (object1[prop] !== object2[prop]))
+    || (bothAreObjects && !isEqual(object1[prop], object2[prop]))) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+isEqual({a:1, b:2},{a:1, b:'2'}) // false
+isEqual({a:1, b:2},{a:1, b: 2 }) // true
+isEqual({a:1, b:{c:3}},{a:1, b:{c:3}}) // true
+isEqual({a:1, b:{d:'hey'}},{a:1, b:{c:3}}) //false
+
+
 
 //3. Functional scope (stress overtook me on this question, dunno why)
 const outerVar = 'i\'m globally available';
